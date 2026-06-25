@@ -18,13 +18,34 @@ function addMinutes(hhmm, delta) {
   return toHHMM(toMinutes(hhmm) + delta);
 }
 
-// Accepts "7:5", "07:05", "23:59", etc. Returns normalized "HH:mm" or null if invalid.
+// Accepts "7", "7am", "7:30 PM", "07:05", "23:59", etc.
+// Returns normalized 24-hour "HH:mm" or null if invalid.
 function normalizeTime(input) {
-  const match = String(input).trim().match(/^(\d{1,2}):(\d{2})$/);
+  if (input == null) return null;
+
+  let text = String(input).trim().toLowerCase();
+  text = text.replace(/\./g, '').replace(/\s+/g, ' ');
+
+  const match = text.match(/^(\d{1,2})(?::(\d{1,2}))?(?:\s*(am|pm))?$/);
   if (!match) return null;
-  const h = parseInt(match[1], 10);
-  const m = parseInt(match[2], 10);
-  if (h < 0 || h > 23 || m < 0 || m > 59) return null;
+
+  let h = parseInt(match[1], 10);
+  let m = match[2] ? parseInt(match[2], 10) : 0;
+  const suffix = match[3];
+
+  if (m < 0 || m > 59) return null;
+
+  if (suffix) {
+    if (h < 1 || h > 12) return null;
+    if (suffix === 'am') {
+      if (h === 12) h = 0;
+    } else {
+      if (h !== 12) h += 12;
+    }
+  } else {
+    if (h < 0 || h > 23) return null;
+  }
+
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
 }
 

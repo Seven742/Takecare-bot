@@ -25,8 +25,8 @@ function cancelKeyboard() {
 async function scheduleHandler(ctx) {
   sessions.set(ctx.from.id, { step: 0, data: {} });
   await ctx.reply(
-    "Let's set up your daily schedule together. 💛\nJust send me times in 24-hour HH:MM format, like 07:30.\n\n" +
-      STEPS[0].prompt,
+    "Let's set up your daily schedule together. 💛\nYou can send times in 24-hour format or 12-hour AM/PM, like 07:30 or 7:30 PM.\n\n" +
+    STEPS[0].prompt,
     cancelKeyboard()
   );
 }
